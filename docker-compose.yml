@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+  nginx:
+    image: nginx:alpine
+    restart: always
+    links:
+      - fpm8
+      - fpm7
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/enabled:/etc/nginx/conf.d
+      - ./nginx/snippets:/nginx/snippets
+      - ./nginx/certificates:/nginx/certificates
+    volumes_from:
+      - data
+
+  fpm8:
+    image: php:8.0-rc-fpm-alpine
+    restart: always
+    volumes_from:
+      - data
+
+  fpm7:
+    image: php:7.4.10-fpm-alpine
+    restart: always
+    volumes_from:
+      - data
+
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mariadb:/var/lib/mysql
+
+  data:
+    image: alpine:latest
+    command: echo "READY!!!"
+    volumes:
+      - ./vhosts:/vhosts
+      - ./tmp:/tmp
+
+# create network: docker network create xnmp-network
+networks:
+  default:
+    external:
+      name: xnmp-network
