@@ -5,11 +5,10 @@ services:
     image: nginx:alpine
     restart: always
     links:
-      - fpm8
-      - fpm7
+      - php8
+      - php7
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
     volumes:
       - ./nginx/enabled:/etc/nginx/conf.d
       - ./nginx/snippets:/nginx/snippets
@@ -17,13 +16,13 @@ services:
     volumes_from:
       - data
 
-  fpm8:
+  php8:
     image: php:8.0-rc-fpm-alpine
     restart: always
     volumes_from:
       - data
 
-  fpm7:
+  php7:
     image: php:7.4.10-fpm-alpine
     restart: always
     volumes_from:
@@ -34,6 +33,8 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
     volumes:
       - ./mariadb:/var/lib/mysql
 
@@ -41,7 +42,7 @@ services:
     image: alpine:latest
     command: echo "READY!!!"
     volumes:
-      - ./vhosts:/vhosts
+      - ./public_html:/vhosts
       - ./tmp:/tmp
 
 # create network: docker network create xnmp-network
