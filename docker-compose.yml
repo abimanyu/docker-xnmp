@@ -1,9 +1,9 @@
-version: '2'
+version: '3.8'
 
 services:
-  nginx:
+  nginx_xnmp:
+    container_name: nginx
     image: nginx:alpine
-    restart: always
     links:
       - php8
       - php7
@@ -15,38 +15,48 @@ services:
       - ./nginx/certificates:/nginx/certificates
     volumes_from:
       - data
+    networks: 
+      - xnmp-network
 
   php8:
+    container_name: php8
     image: php:8.0-rc-fpm-alpine
-    restart: always
     volumes_from:
       - data
+    networks: 
+      - xnmp-network
 
   php7:
+    container_name: php7
     image: php:7.4.10-fpm-alpine
-    restart: always
     volumes_from:
       - data
+    networks: 
+      - xnmp-network
 
-  mariadb:
+  db_xnmp:
+    container_name: db_xnmp
     image: mariadb:latest
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
     volumes:
       - ./mariadb:/var/lib/mysql
+    networks: 
+      - xnmp-network
 
   data:
+    container_name: data
     image: alpine:latest
     command: echo "READY!!!"
     volumes:
       - ./public_html:/vhosts
       - ./tmp:/tmp
+    networks: 
+      - xnmp-network
 
 # create network: docker network create xnmp-network
 networks:
-  default:
-    external:
-      name: xnmp-network
+  xnmp-network:
+    name: xnmp-network
