@@ -1,13 +1,15 @@
 # Docker XNMP Development
-### Cross-Platform (X), Nginx (N), MariaDB (M), PHP-FPM (P)
+#### Cross-Platform (X), Nginx (N), MariaDB (M), PHP-FPM (P)
 --- 
 
-## How to
+### How to
 ---
+
 - install Docker https://www.docker.com/  
     `brew install docker`
 - `docker network create xnmp-network`
 - `docker-compose up`
+
 ---
 Create default index pages  
 : `./public_html/default/index.html`
@@ -28,7 +30,6 @@ Create default index pages
 </body>
 </html>
 ```
-
 
 ---
 Create Nginx default configuration   
